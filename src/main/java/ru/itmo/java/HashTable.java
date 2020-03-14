@@ -12,7 +12,7 @@ public class HashTable {
         }
     }
 
-    private int size = 0, capacity, threshold;
+    private int size = 0, actualSize = 0, capacity, threshold;
     private Entry[] entries;
 
     HashTable(int capacity) {
@@ -44,10 +44,15 @@ public class HashTable {
 
     private int findKey(Entry[] array, Object key) {
         int index = keyToIndex(key);
+        int count = 0;
         while (array[index] != null && !array[index].key.equals(key)) {
             index++;
+            count++;
             if (index == array.length) {
                 index = 0;
+            }
+            if (count > capacity) {
+                break;
             }
         }
         return index;
@@ -66,7 +71,7 @@ public class HashTable {
     }
 
     Object put(Object key, Object value) {
-        if (size + 1 > threshold) {
+        if (actualSize + 1 > threshold) {
             doubleCapacity();
         }
         int index = findKey(entries, key);
@@ -78,6 +83,7 @@ public class HashTable {
             Entry entry = new Entry(key, value);
             entries[index] = entry;
             size++;
+            actualSize++;
             return null;
         }
     }
